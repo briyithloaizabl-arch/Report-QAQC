@@ -1,14 +1,13 @@
-QAQC MOBILE APP v3
+QAQC MOBILE APP
 
 Versión enfocada en el Reporte Diario QA/QC.
 
 Novedades:
-- Dashboard final simplificado: solo gráficos para compartir.
+- Dashboard final simplificado.
 - Botón “Descargar dashboard como imagen”.
-- La descarga genera un PNG vertical listo para WhatsApp.
-- Iconos de instalación en tonos rosados.
+- La descarga genera un PNG.
 - Mantiene formulario, guardado local, histórico, CSV y respaldo JSON.
-- Total de lotes y total de muestras continúan siendo editables.
+- Total de lotes y total de muestras son editables.
 
 Para probar:
 1. Descomprime el ZIP.
