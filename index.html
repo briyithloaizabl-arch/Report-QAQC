@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<link rel="manifest" href="manifest.json">
+<title>Reporte Diario QA/QC</title>
+<style>
+:root{
+  --bg:#f6f7f9; --card:#fff; --text:#202124; --muted:#6f7480; --border:#dfe3e8;
+  --accent:#d8a7b1; --accent2:#f2d9de; --ok:#dcebdc; --warn:#f7ecd0;
+  --rose:#d8a7b1; --lav:#c8b7e8; --mint:#bfe2d0; --sky:#b8d9ef; --peach:#f2c9b8; --sun:#eadf9d;
+  --blue:#89b4d8; --green:#9bc9aa; --orange:#e8b27d; --purple:#b6a0d9; --pink:#d7a6b7;
+}
+*{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+.app{max-width:820px;margin:auto;padding:14px 14px 90px}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin:8px 0 14px}
+h1{font-size:22px;margin:0} .sub{font-size:13px;color:var(--muted);margin-top:3px}
+.badge{background:var(--accent2);padding:8px 10px;border-radius:999px;font-size:12px;white-space:nowrap}
+.tabs{display:flex;gap:8px;overflow:auto;padding-bottom:6px;margin-bottom:12px}
+.tabs button{border:1px solid var(--border);background:#fff;border-radius:12px;padding:10px 14px;font-size:14px;min-height:44px}
+.tabs button.active{background:var(--accent2);font-weight:700}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px;margin-bottom:12px}
+.card h2{font-size:16px;margin:0 0 12px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media(min-width:700px){.grid4{grid-template-columns:repeat(4,minmax(0,1fr))}.grid5{grid-template-columns:repeat(5,minmax(0,1fr))}}
+.kpi{background:#fff;border:1px solid var(--border);border-radius:14px;padding:12px}
+.kpi b{display:block;font-size:23px}.kpi span{font-size:12px;color:var(--muted)}
+.kpi.rose{background:linear-gradient(135deg,#fff,var(--accent2));border-color:#e5c5cc}
+.kpi.lav{background:linear-gradient(135deg,#fff,#eee8f8);border-color:#d6cbea}
+.kpi.mint{background:linear-gradient(135deg,#fff,#e9f5ef);border-color:#cfe5d9}
+.kpi.sky{background:linear-gradient(135deg,#fff,#eaf4fb);border-color:#c9e1f0}
+.kpi.peach{background:linear-gradient(135deg,#fff,#f9eee8);border-color:#efdad0}
+.chart-grid{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:700px){.chart-grid{grid-template-columns:1fr 1fr}}
+.chart-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:14px}
+.chart-card h3{font-size:14px;margin:0 0 10px}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.legend span{font-size:11px;color:var(--muted);display:inline-flex;align-items:center;gap:5px}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.donut-wrap{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:center}
+@media(max-width:480px){.donut-wrap{grid-template-columns:1fr}.donut-wrap svg{margin:auto}}
+.barset{display:flex;align-items:flex-end;gap:10px;height:170px;padding:10px 4px 0;border-bottom:1px solid var(--border)}
+.barcol{flex:1;min-width:0;text-align:center}
+.bar{width:100%;border-radius:8px 8px 0 0;min-height:3px;transition:height .2s ease}
+.barcol small{display:block;font-size:10px;color:var(--muted);margin-top:5px;word-break:break-word}
+.barcol b{font-size:11px}
+.spark{width:100%;height:120px}
+.proc-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.proc-box{border-radius:12px;padding:10px;text-align:center}
+.proc-box b{display:block;font-size:20px}
+.proc-box span{font-size:11px;color:var(--muted)}
+@media(max-width:480px){.proc-strip{grid-template-columns:repeat(2,1fr)}}
+label{display:block;font-size:12px;font-weight:650;margin-bottom:5px}
+input,select,textarea{width:100%;font:inherit;font-size:16px;border:1px solid var(--border);border-radius:10px;padding:10px;background:#fff;min-height:44px}
+textarea{min-height:90px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.proc{border:1px solid var(--border);border-radius:14px;padding:12px;margin-bottom:10px}
+.proc h3{margin:0 0 10px;font-size:14px}
+.btn{border:0;background:var(--accent2);padding:11px 14px;border-radius:12px;font-weight:700;min-height:44px}
+.btn.sec{background:#fff;border:1px solid var(--border)}
+.btn.danger{background:#fff;border:1px solid #d9b7b7}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+.progress{height:10px;background:#eceff2;border-radius:999px;overflow:hidden;margin-top:5px}
+.progress>i{display:block;height:100%;background:#a8afb8}
+.list-item{border:1px solid var(--border);border-radius:12px;padding:11px;margin-bottom:8px;background:#fff}
+.list-item .top{display:flex;justify-content:space-between;gap:8px}
+.small{font-size:12px;color:var(--muted)} .hidden{display:none!important}
+table{width:100%;border-collapse:collapse;font-size:13px} th,td{border-bottom:1px solid var(--border);padding:8px;text-align:left}
+footer{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.96);border-top:1px solid var(--border);padding:10px}
+footer .inner{max-width:820px;margin:auto;display:flex;gap:8px;padding:0 14px}
+footer button{flex:1}
+.notice{padding:10px;border-radius:10px;background:var(--ok);font-size:13px;margin-top:10px}
+.err{background:#f5dede}
+@media(max-width:480px){.grid3{grid-template-columns:1fr 1fr}.row{grid-template-columns:1fr}.app{padding-left:10px;padding-right:10px}}
+@media print{
+  body{background:#fff}.tabs,footer,#historySection .actions,.no-print{display:none!important}.app{max-width:none;padding:0}
+  .card,.kpi{break-inside:avoid;border-color:#bbb}
+}
+
+.dashboard-share-title{
+  text-align:center;font-size:18px;font-weight:800;margin:4px 0 14px;color:#202124;
+}
+.dashboard-only{max-width:760px;margin:auto}
+.share-card-title{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:800;margin-bottom:10px}
+.pink-icon{width:28px;height:28px;border-radius:9px;background:#f8d7e3;color:#d83f78;display:inline-flex;align-items:center;justify-content:center;font-size:17px}
+.download-image-btn{width:100%;background:#e75389;color:white;border:0;border-radius:14px;padding:13px 16px;font-weight:800;min-height:48px;margin-top:12px}
+.download-image-btn:active{transform:translateY(1px)}
+.dashboard-note{font-size:11px;color:var(--muted);text-align:center;margin-top:6px}
+
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div><h1>Reporte Diario QA/QC</h1><div class="sub">App móvil · registro manual y avance automático</div></div>
+  <div class="badge">Geometalurgia</div>
+</header>
+
+<div class="tabs no-print">
+  <button class="active" data-tab="form">Nuevo reporte</button>
+  <button data-tab="dashboard">Dashboard</button>
+  <button data-tab="history">Histórico</button>
+</div>
+
+<section id="form" class="tab">
+  <div class="card">
+    <h2>Datos generales</h2>
+    <div class="row">
+      <div><label>Fecha</label><input id="fecha" type="date"></div>
+      <div><label>Guardia</label><select id="guardia"><option>Guardia A</option><option>Guardia B</option></select></div>
+      <div><label>Responsable QA/QC</label><input id="responsable" placeholder="Nombre"></div>
+      <div><label>Campaña / periodo</label><input id="campana" value="2026"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Base del avance</h2>
+    <div class="row">
+      <div><label>Total de lotes</label><input id="totalLotes" type="number" min="0" value="129"></div>
+      <div><label>Total de muestras</label><input id="totalMuestras" type="number" min="0" value="6708"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Avance general</h2>
+    <div class="grid grid5">
+      <div><label>Lotes lecturados</label><input id="lecturados" type="number" min="0" value="0"></div>
+      <div><label>Lotes revisados</label><input id="revisados" type="number" min="0" value="0"></div>
+      <div><label>Reportes FRX</label><input id="reportesFrx" type="number" min="0" value="0"></div>
+      <div><label>Lotes emitidos</label><input id="lotesEmitidos" type="number" min="0" value="0"></div>
+      <div><label>Muestras emitidas</label><input id="muestrasEmitidas" type="number" min="0" value="0"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Lotes asignados hasta fin de guardia</h2>
+    <div class="grid grid4">
+      <div><label>En interpretación</label><input id="interpretacion" type="number" min="0" value="0"></div>
+      <div><label>En revisión</label><input id="revision" type="number" min="0" value="0"></div>
+      <div><label>Observados</label><input id="observados" type="number" min="0" value="0"></div>
+      <div><label>Validados</label><input id="validados" type="number" min="0" value="0"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Controles QA/QC</h2>
+
+    <div class="proc">
+      <h3>1. Preparación</h3>
+      <div class="grid3">
+        <div><label>MP · Malla patrón</label><input id="mp" type="number" min="0" value="0"></div>
+        <div><label>CG · Control granulométrico</label><input id="cg" type="number" min="0" value="0"></div>
+        <div><label>MDP</label><input id="mdp" type="number" min="0" value="0"></div>
+      </div>
+    </div>
+
+    <div class="proc">
+      <h3>2. DRX</h3>
+      <div class="grid3">
+        <div><label>Corundum</label><input id="corundum" type="number" min="0" value="0"></div>
+        <div><label>MDI</label><input id="mdi" type="number" min="0" value="0"></div>
+        <div><label>MRI</label><input id="mri" type="number" min="0" value="0"></div>
+      </div>
+    </div>
+
+    <div class="proc">
+      <h3>3. FRX</h3>
+      <div class="grid grid4">
+        <div><label>CS-M2</label><input id="csm2" type="number" min="0" value="0"></div>
+        <div><label>BLK</label><input id="blk" type="number" min="0" value="0"></div>
+        <div><label>STD</label><input id="std" type="number" min="0" value="0"></div>
+        <div><label>MD</label><input id="md" type="number" min="0" value="0"></div>
+      </div>
+    </div>
+
+    <div class="proc">
+      <h3>4. NIR</h3>
+      <div class="grid">
+        <div><label>MY</label><input id="my" type="number" min="0" value="0"></div>
+        <div><label>MDL</label><input id="mdl" type="number" min="0" value="0"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Emisión de base de datos</h2>
+    <div class="row">
+      <div><label>N.° de envío</label><input id="nEnvio" placeholder="Ej. 2"></div>
+      <div><label>Estado</label><select id="estadoEnvio"><option>Pendiente</option><option>Emitido</option><option>En revisión</option></select></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Comentarios</h2>
+    <textarea id="comentarios" placeholder="Observaciones, incidencias, pendientes..."></textarea>
+    <div id="msg" aria-live="polite"></div>
+  </div>
+</section>
+
+<section id="dashboard" class="tab hidden">
+  <div class="dashboard-only" id="dashboardCapture">
+    <div class="dashboard-share-title" id="dashReportTitle">Reporte Diario QA/QC</div>
+
+    <div class="card">
+      <div class="share-card-title"><span class="pink-icon">▥</span>Avance general</div>
+      <div><div class="small">Lecturados <span id="pLectTxt"></span></div><div class="progress"><i id="pLect" style="background:var(--blue)"></i></div></div><br>
+      <div><div class="small">Revisados <span id="pRevTxt"></span></div><div class="progress"><i id="pRev" style="background:var(--purple)"></i></div></div><br>
+      <div><div class="small">Reportes FRX <span id="pFrxTxt"></span></div><div class="progress"><i id="pFrx" style="background:var(--green)"></i></div></div><br>
+      <div><div class="small">Muestras emitidas <span id="pMuestrasTxt"></span></div><div class="progress"><i id="pMuestras" style="background:var(--orange)"></i></div></div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="share-card-title"><span class="pink-icon">◔</span>Distribución de lotes asignados</div>
+        <div class="donut-wrap">
+          <svg id="lotDonut" viewBox="0 0 140 140" width="150" height="150" aria-label="Gráfico circular de lotes asignados"></svg>
+          <div>
+            <div class="legend">
+              <span><i style="background:var(--blue)"></i>Interpretación</span>
+              <span><i style="background:var(--purple)"></i>Revisión</span>
+              <span><i style="background:var(--orange)"></i>Observados</span>
+              <span><i style="background:var(--green)"></i>Validados</span>
+            </div>
+            <div id="lotStatusText" class="small" style="margin-top:10px"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="share-card-title"><span class="pink-icon">▦</span>Controles QA/QC por proceso</div>
+        <div class="proc-strip">
+          <div class="proc-box" style="background:#f8e9ee"><b id="procPrep">0</b><span>Preparación</span></div>
+          <div class="proc-box" style="background:#eee8f8"><b id="procDrx">0</b><span>DRX</span></div>
+          <div class="proc-box" style="background:#e8f2fa"><b id="procFrx">0</b><span>FRX</span></div>
+          <div class="proc-box" style="background:#e8f3ec"><b id="procNir">0</b><span>NIR</span></div>
+        </div>
+        <div class="barset" id="procBars" aria-label="Barras de controles por proceso">
+          <div class="barcol"><div class="bar" id="barPrep" style="background:var(--pink);height:3px"></div><b id="barPrepV">0</b><small>Prep.</small></div>
+          <div class="barcol"><div class="bar" id="barDrx" style="background:var(--purple);height:3px"></div><b id="barDrxV">0</b><small>DRX</small></div>
+          <div class="barcol"><div class="bar" id="barFrx" style="background:var(--blue);height:3px"></div><b id="barFrxV">0</b><small>FRX</small></div>
+          <div class="barcol"><div class="bar" id="barNir" style="background:var(--green);height:3px"></div><b id="barNirV">0</b><small>NIR</small></div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="share-card-title"><span class="pink-icon">≡</span>Controles QA/QC individuales</div>
+        <div class="barset" id="controlBars" style="gap:6px;height:210px">
+          <div class="barcol"><div class="bar" id="b_mp" style="background:var(--pink)"></div><b id="v_mp">0</b><small>MP</small></div>
+          <div class="barcol"><div class="bar" id="b_cg" style="background:var(--pink)"></div><b id="v_cg">0</b><small>CG</small></div>
+          <div class="barcol"><div class="bar" id="b_mdp" style="background:var(--pink)"></div><b id="v_mdp">0</b><small>MDP</small></div>
+          <div class="barcol"><div class="bar" id="b_corundum" style="background:var(--purple)"></div><b id="v_corundum">0</b><small>Cor.</small></div>
+          <div class="barcol"><div class="bar" id="b_mdi" style="background:var(--purple)"></div><b id="v_mdi">0</b><small>MDI</small></div>
+          <div class="barcol"><div class="bar" id="b_mri" style="background:var(--purple)"></div><b id="v_mri">0</b><small>MRI</small></div>
+          <div class="barcol"><div class="bar" id="b_csm2" style="background:var(--blue)"></div><b id="v_csm2">0</b><small>CS-M2</small></div>
+          <div class="barcol"><div class="bar" id="b_blk" style="background:var(--blue)"></div><b id="v_blk">0</b><small>BLK</small></div>
+          <div class="barcol"><div class="bar" id="b_std" style="background:var(--blue)"></div><b id="v_std">0</b><small>STD</small></div>
+          <div class="barcol"><div class="bar" id="b_md" style="background:var(--blue)"></div><b id="v_md">0</b><small>MD</small></div>
+          <div class="barcol"><div class="bar" id="b_my" style="background:var(--green)"></div><b id="v_my">0</b><small>MY</small></div>
+          <div class="barcol"><div class="bar" id="b_mdl" style="background:var(--green)"></div><b id="v_mdl">0</b><small>MDL</small></div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="share-card-title"><span class="pink-icon">◫</span>Emisión de base de datos</div>
+        <svg id="emitGauge" viewBox="0 0 240 130" class="spark" aria-label="Indicador de avance de emisión"></svg>
+        <div id="emitText" class="small" style="text-align:center"></div>
+      </div>
+    </div>
+  </div>
+
+  <button class="download-image-btn no-print" id="downloadDashboardBtn">⬇ Descargar dashboard como imagen</button>
+  <div class="dashboard-note no-print">Genera un PNG.</div>
+</section>
+
+<section id="history" class="tab hidden">
+  <div id="historySection" class="card">
+    <div class="actions no-print" style="margin-bottom:10px">
+      <button class="btn sec" id="exportAllBtn">Exportar histórico CSV</button>
+      <button class="btn sec" id="backupBtn">Descargar respaldo JSON</button>
+      <label class="btn sec" style="display:inline-flex;align-items:center;cursor:pointer">Importar respaldo<input id="importFile" type="file" accept=".json" hidden></label>
+    </div>
+    <div id="historyList"></div>
+  </div>
+</section>
+</div>
+
+<footer class="no-print">
+  <div class="inner">
+    <button class="btn sec" id="clearBtn">Limpiar</button>
+    <button class="btn" id="saveBtn">Guardar reporte</button>
+  </div>
+</footer>
+
+<script>
+const ids = ["fecha","guardia","responsable","campana","totalLotes","totalMuestras","lecturados","revisados","reportesFrx","lotesEmitidos","muestrasEmitidas","interpretacion","revision","observados","validados","mp","cg","mdp","corundum","mdi","mri","csm2","blk","std","md","my","mdl","nEnvio","estadoEnvio","comentarios"];
+const numeric = new Set(["totalLotes","totalMuestras","lecturados","revisados","reportesFrx","lotesEmitidos","muestrasEmitidas","interpretacion","revision","observados","validados","mp","cg","mdp","corundum","mdi","mri","csm2","blk","std","md","my","mdl"]);
+const $ = id => document.getElementById(id);
+const key = "qaqc_reports_v1";
+let editingId = null;
+
+function today(){
+  const d=new Date(); const p=n=>String(n).padStart(2,"0");
+  return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate());
+}
+$("fecha").value=today();
+
+function getReports(){ try{return JSON.parse(localStorage.getItem(key)||"[]")}catch{return []} }
+function setReports(r){ localStorage.setItem(key,JSON.stringify(r)) }
+function collect(){
+  const o={id:editingId || ("r_"+Date.now()), savedAt:new Date().toISOString()};
+  ids.forEach(id=>{ let v=$(id).value; if(numeric.has(id)) v=Math.max(0,Number(v)||0); o[id]=v; });
+  return o;
+}
+function fill(o){
+  ids.forEach(id=>{ if(o[id]!==undefined) $(id).value=o[id]; });
+  editingId=o.id||null; refreshDashboard();
+}
+function pct(n,d){ return d>0?Math.min(100,Math.max(0,(n/d)*100)):0 }
+function setProg(bar,txt,n,d){
+  const p=pct(n,d); $(bar).style.width=p+"%"; $(txt).textContent=`${n} / ${d} (${p.toFixed(1)}%)`;
+}
+function polar(cx,cy,r,a){ const rad=(a-90)*Math.PI/180; return {x:cx+r*Math.cos(rad),y:cy+r*Math.sin(rad)}; }
+function arcPath(cx,cy,r,a0,a1){
+  const p0=polar(cx,cy,r,a1), p1=polar(cx,cy,r,a0), large=(a1-a0)<=180?0:1;
+  return `M ${p0.x} ${p0.y} A ${r} ${r} 0 ${large} 0 ${p1.x} ${p1.y}`;
+}
+function donut(svgId, values, colors){
+  const svg=$(svgId); const total=values.reduce((a,b)=>a+b,0); svg.innerHTML="";
+  if(total<=0){ svg.innerHTML='<circle cx="70" cy="70" r="46" fill="none" stroke="#e8ebee" stroke-width="18"/><text x="70" y="75" text-anchor="middle" font-size="16" fill="#6f7480">Sin datos</text>'; return; }
+  let a=0;
+  values.forEach((v,i)=>{ if(v<=0)return; const ang=360*v/total; const path=document.createElementNS("http://www.w3.org/2000/svg","path"); path.setAttribute("d",arcPath(70,70,46,a,a+ang)); path.setAttribute("fill","none"); path.setAttribute("stroke",colors[i]); path.setAttribute("stroke-width","18"); path.setAttribute("stroke-linecap","butt"); svg.appendChild(path); a+=ang; });
+  svg.innerHTML += `<circle cx="70" cy="70" r="30" fill="white"/><text x="70" y="68" text-anchor="middle" font-size="20" font-weight="700">${total}</text><text x="70" y="84" text-anchor="middle" font-size="10" fill="#6f7480">lotes</text>`;
+}
+function gauge(svgId, value){
+  const svg=$(svgId), p=Math.max(0,Math.min(100,value));
+  const start=180,end=360, cx=120,cy=110,r=78;
+  const bg=arcPath(cx,cy,r,start,end), fg=arcPath(cx,cy,r,start,start+(end-start)*p/100);
+  svg.innerHTML=`<path d="${bg}" fill="none" stroke="#eceff2" stroke-width="18" stroke-linecap="round"/>
+  <path d="${fg}" fill="none" stroke="var(--orange)" stroke-width="18" stroke-linecap="round"/>
+  <text x="120" y="84" text-anchor="middle" font-size="28" font-weight="700">${p.toFixed(1)}%</text>
+  <text x="120" y="105" text-anchor="middle" font-size="11" fill="#6f7480">avance emitido</text>`;
+}
+function refreshDashboard(){
+  const o=collect();
+  const fechaFmt = o.fecha ? o.fecha.split("-").reverse().join("/") : "";
+  $("dashReportTitle").textContent = `Reporte Diario QA/QC – ${fechaFmt}`;
+  setProg("pLect","pLectTxt",o.lecturados,o.totalLotes);
+  setProg("pRev","pRevTxt",o.revisados,o.totalLotes);
+  setProg("pFrx","pFrxTxt",o.reportesFrx,o.totalLotes);
+  setProg("pMuestras","pMuestrasTxt",o.muestrasEmitidas,o.totalMuestras);
+
+  donut("lotDonut",[o.interpretacion,o.revision,o.observados,o.validados],["#89b4d8","#b6a0d9","#e8b27d","#9bc9aa"]);
+  $("lotStatusText").textContent=`Interpretación ${o.interpretacion} · Revisión ${o.revision} · Observados ${o.observados} · Validados ${o.validados}`;
+
+  const prep=o.mp+o.cg+o.mdp, drx=o.corundum+o.mdi+o.mri, frx=o.csm2+o.blk+o.std+o.md, nir=o.my+o.mdl;
+  [["procPrep",prep],["procDrx",drx],["procFrx",frx],["procNir",nir],["barPrepV",prep],["barDrxV",drx],["barFrxV",frx],["barNirV",nir]].forEach(([id,v])=>$(id).textContent=v);
+  const maxP=Math.max(1,prep,drx,frx,nir);
+  [["barPrep",prep],["barDrx",drx],["barFrx",frx],["barNir",nir]].forEach(([id,v])=>$(id).style.height=(8+135*v/maxP)+"px");
+
+  const controls={mp:o.mp,cg:o.cg,mdp:o.mdp,corundum:o.corundum,mdi:o.mdi,mri:o.mri,csm2:o.csm2,blk:o.blk,std:o.std,md:o.md,my:o.my,mdl:o.mdl};
+  const maxC=Math.max(1,...Object.values(controls));
+  Object.entries(controls).forEach(([k,v])=>{ $("v_"+k).textContent=v; $("b_"+k).style.height=(5+165*v/maxC)+"px"; });
+
+  const pe=pct(o.muestrasEmitidas,o.totalMuestras);
+  gauge("emitGauge",pe);
+  $("emitText").textContent=`${o.muestrasEmitidas} / ${o.totalMuestras} muestras · ${o.lotesEmitidos} / ${o.totalLotes} lotes emitidos`;
+}
+ids.forEach(id=>$(id).addEventListener("input",refreshDashboard));
+
+function save(){
+  const o=collect();
+  if(!o.fecha){ showMsg("Selecciona una fecha.",true); return; }
+  let r=getReports(); const idx=r.findIndex(x=>x.id===o.id);
+  if(idx>=0) r[idx]=o; else r.unshift(o);
+  setReports(r); editingId=o.id; showMsg("Reporte guardado en este dispositivo."); renderHistory(); refreshDashboard();
+}
+function showMsg(t,err=false){ $("msg").className="notice"+(err?" err":""); $("msg").textContent=t; setTimeout(()=>{$("msg").textContent="";$("msg").className=""},3000) }
+$("saveBtn").addEventListener("click",save);
+$("clearBtn").addEventListener("click",()=>{
+  if(!confirm("¿Limpiar el formulario actual?")) return;
+  editingId=null; document.querySelectorAll("input[type=number]").forEach(i=>i.value=0);
+  $("totalLotes").value=129; $("totalMuestras").value=6708; $("fecha").value=today(); $("responsable").value=""; $("comentarios").value=""; $("nEnvio").value=""; refreshDashboard();
+});
+document.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active")); b.classList.add("active");
+  document.querySelectorAll(".tab").forEach(s=>s.classList.add("hidden")); $(b.dataset.tab).classList.remove("hidden");
+  if(b.dataset.tab==="dashboard") refreshDashboard(); if(b.dataset.tab==="history") renderHistory();
+}));
+
+function renderHistory(){
+  const r=getReports(), box=$("historyList");
+  if(!r.length){box.innerHTML='<div class="small">Aún no hay reportes guardados.</div>';return}
+  box.innerHTML=r.map(x=>`<div class="list-item">
+    <div class="top"><div><b>${x.fecha.split("-").reverse().join("/")}</b> · ${x.guardia}<div class="small">${x.responsable||"Sin responsable"} · ${x.lecturados}/${x.totalLotes} lecturados</div></div>
+    <div class="actions"><button class="btn sec" data-edit="${x.id}">Editar</button><button class="btn danger" data-del="${x.id}">Eliminar</button></div></div>
+  </div>`).join("");
+  box.querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>{const o=getReports().find(x=>x.id===b.dataset.edit); if(o){fill(o);document.querySelector('[data-tab="form"]').click();}}));
+  box.querySelectorAll("[data-del]").forEach(b=>b.addEventListener("click",()=>{if(confirm("¿Eliminar este reporte?")){setReports(getReports().filter(x=>x.id!==b.dataset.del));renderHistory();}}));
+}
+function csvRow(arr){return arr.map(v=>`"${String(v??"").replaceAll('"','""')}"`).join(";")}
+const exportFields = ["fecha","guardia","responsable","campana","totalLotes","totalMuestras","lecturados","revisados","reportesFrx","lotesEmitidos","muestrasEmitidas","interpretacion","revision","observados","validados","mp","cg","mdp","corundum","mdi","mri","csm2","blk","std","md","my","mdl","nEnvio","estadoEnvio","comentarios"];
+function download(name,content,type){
+  const blob=new Blob([content],{type}); const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),600);
+}
+function exportCsv(rows,name){
+  const head=exportFields; const csv=[csvRow(head),...rows.map(o=>csvRow(head.map(k=>o[k])) )].join("\n");
+  download(name,"\ufeff"+csv,"text/csv;charset=utf-8");
+}
+$("exportAllBtn").addEventListener("click",()=>exportCsv(getReports(),"QAQC_historico.csv"));
+$("backupBtn").addEventListener("click",()=>download("QAQC_respaldo.json",JSON.stringify(getReports(),null,2),"application/json"));
+$("importFile").addEventListener("change",async e=>{
+  const f=e.target.files[0]; if(!f)return;
+  try{const data=JSON.parse(await f.text()); if(!Array.isArray(data)) throw new Error(); setReports(data); renderHistory(); alert("Respaldo importado.");}
+  catch{alert("El archivo no es un respaldo válido.");}
+  e.target.value="";
+});
+
+
+function roundedRect(ctx,x,y,w,h,r,fill,stroke){
+  ctx.beginPath();
+  ctx.roundRect(x,y,w,h,r);
+  if(fill){ctx.fillStyle=fill;ctx.fill();}
+  if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=1;ctx.stroke();}
+}
+function txt(ctx,text,x,y,size=18,weight="400",color="#202124",align="left"){
+  ctx.fillStyle=color;ctx.font=`${weight} ${size}px Arial, sans-serif`;ctx.textAlign=align;ctx.textBaseline="middle";ctx.fillText(String(text),x,y);
+}
+function progressCanvas(ctx,label,n,d,y,color,W){
+  const p=d>0?Math.min(1,n/d):0;
+  txt(ctx,`${label} ${n} / ${d} (${(p*100).toFixed(1)}%)`,58,y,16,"400","#5f6670");
+  roundedRect(ctx,58,y+18,W-116,12,6,"#edf0f3");
+  roundedRect(ctx,58,y+18,(W-116)*p,12,6,color);
+}
+function arcCanvas(ctx,cx,cy,r,start,end,color,width){
+  ctx.beginPath();ctx.arc(cx,cy,r,start,end);ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineCap="butt";ctx.stroke();
+}
+function drawDashboardPNG(){
+  const o=collect(), W=1080,H=1420;
+  const c=document.createElement("canvas"); c.width=W;c.height=H; const ctx=c.getContext("2d");
+  ctx.fillStyle="#fffafb";ctx.fillRect(0,0,W,H);
+
+  const pink="#df5b8d", pale="#f9dce7", border="#edd7df";
+  txt(ctx,"GEOMETALURGIA",60,54,20,"700",pink);
+  const fechaFmt=o.fecha?o.fecha.split("-").reverse().join("/"):"";
+  txt(ctx,"Reporte Diario QA/QC",W/2,55,32,"700","#202632","center");
+  roundedRect(ctx,W/2-122,83,244,46,22,pale);
+  txt(ctx,fechaFmt,W/2,106,22,"700","#202124","center");
+
+  // Avance
+  roundedRect(ctx,32,150,W-64,330,20,"#ffffff",border);
+  roundedRect(ctx,50,138,280,46,18,pale);
+  txt(ctx,"▥  Avance general",70,161,22,"700","#202124");
+  progressCanvas(ctx,"Lecturados",o.lecturados,o.totalLotes,220,"#79afd8",W);
+  progressCanvas(ctx,"Revisados",o.revisados,o.totalLotes,285,"#ad8bd4",W);
+  progressCanvas(ctx,"Reportes FRX",o.reportesFrx,o.totalLotes,350,"#78c5a4",W);
+  progressCanvas(ctx,"Muestras emitidas",o.muestrasEmitidas,o.totalMuestras,415,"#f0a66a",W);
+
+  // left middle donut
+  roundedRect(ctx,32,505,500,390,20,"#ffffff",border);
+  roundedRect(ctx,50,492,370,46,18,pale); txt(ctx,"◔  Distribución de lotes asignados",70,515,21,"700","#202124");
+  const vals=[o.interpretacion,o.revision,o.observados,o.validados], cols=["#79afd8","#ad8bd4","#f0a66a","#78c5a4"];
+  const total=vals.reduce((a,b)=>a+b,0), cx=205,cy=690,r=98;
+  if(total>0){let a=-Math.PI/2; vals.forEach((v,i)=>{if(v<=0)return; const e=a+Math.PI*2*v/total; arcCanvas(ctx,cx,cy,r,a,e,cols[i],34); a=e;});}
+  else arcCanvas(ctx,cx,cy,r,0,Math.PI*2,"#edf0f3",34);
+  txt(ctx,total,cx,cy-5,38,"700","#202124","center"); txt(ctx,"lotes",cx,cy+31,16,"400","#68707b","center");
+  [["Interpretación",o.interpretacion,cols[0]],["Revisión",o.revision,cols[1]],["Observados",o.observados,cols[2]],["Validados",o.validados,cols[3]]].forEach((it,i)=>{
+    ctx.fillStyle=it[2];ctx.beginPath();ctx.arc(345,625+i*50,7,0,Math.PI*2);ctx.fill();
+    txt(ctx,it[0],363,625+i*50,15,"400","#505762");txt(ctx,it[1],485,625+i*50,15,"700","#202124","right");
+  });
+
+  // right middle process
+  roundedRect(ctx,548,505,500,390,20,"#ffffff",border);
+  roundedRect(ctx,566,492,340,46,18,pale); txt(ctx,"▦  Controles QA/QC por proceso",586,515,21,"700","#202124");
+  const prep=o.mp+o.cg+o.mdp, drx=o.corundum+o.mdi+o.mri, frx=o.csm2+o.blk+o.std+o.md, nir=o.my+o.mdl;
+  const proc=[["Preparación",prep,"#e79ab6"],["DRX",drx,"#ad8bd4"],["FRX",frx,"#79afd8"],["NIR",nir,"#78c5a4"]];
+  const maxP=Math.max(1,...proc.map(x=>x[1]));
+  proc.forEach((it,i)=>{
+    const x=585+i*108;
+    roundedRect(ctx,x,560,92,62,12,[ "#fae7ed","#efe8f8","#e8f2fa","#e8f3ec"][i]);
+    txt(ctx,it[1],x+46,583,22,"700","#202124","center");txt(ctx,it[0],x+46,608,11,"500","#606873","center");
+    const bh=180*it[1]/maxP; roundedRect(ctx,x+12,840-bh,68,bh,6,it[2]);
+    txt(ctx,it[1],x+46,858,13,"700","#202124","center");
+  });
+
+  // bottom left controls
+  roundedRect(ctx,32,920,610,455,20,"#ffffff",border);
+  roundedRect(ctx,50,907,350,46,18,pale); txt(ctx,"≡  Controles QA/QC individuales",70,930,21,"700","#202124");
+  const controls=[["MP",o.mp,"#e79ab6"],["CG",o.cg,"#e79ab6"],["MDP",o.mdp,"#e79ab6"],["Cor.",o.corundum,"#ad8bd4"],["MDI",o.mdi,"#ad8bd4"],["MRI",o.mri,"#ad8bd4"],["CS-M2",o.csm2,"#79afd8"],["BLK",o.blk,"#79afd8"],["STD",o.std,"#79afd8"],["MD",o.md,"#79afd8"],["MY",o.my,"#78c5a4"],["MDL",o.mdl,"#78c5a4"]];
+  const maxC=Math.max(1,...controls.map(x=>x[1]));
+  const bw=38,gap=10,start=58,baseY=1320;
+  controls.forEach((it,i)=>{
+    const x=start+i*(bw+gap), bh=285*it[1]/maxC;
+    roundedRect(ctx,x,baseY-bh,bw,bh,6,it[2]);
+    txt(ctx,it[1],x+bw/2,baseY-bh-16,11,"700","#202124","center");
+    txt(ctx,it[0],x+bw/2,baseY+20,10,"600","#505762","center");
+  });
+
+  // bottom right emission gauge
+  roundedRect(ctx,660,920,388,455,20,"#ffffff",border);
+  roundedRect(ctx,678,907,320,46,18,pale); txt(ctx,"◫  Emisión de base de datos",698,930,21,"700","#202124");
+  const p=pct(o.muestrasEmitidas,o.totalMuestras);
+  ctx.lineCap="round";ctx.lineWidth=30;
+  ctx.beginPath();ctx.arc(855,1165,110,Math.PI,2*Math.PI);ctx.strokeStyle="#edf0f3";ctx.stroke();
+  ctx.beginPath();ctx.arc(855,1165,110,Math.PI,Math.PI+Math.PI*(p/100));ctx.strokeStyle=pink;ctx.stroke();
+  txt(ctx,`${p.toFixed(1)}%`,855,1138,40,"700","#202124","center");
+  txt(ctx,"avance emitido",855,1178,15,"400","#68707b","center");
+  txt(ctx,`${o.muestrasEmitidas} / ${o.totalMuestras} muestras`,855,1260,15,"500","#505762","center");
+  txt(ctx,`${o.lotesEmitidos} / ${o.totalLotes} lotes emitidos`,855,1290,15,"500","#505762","center");
+
+  c.toBlob(blob=>{
+    const url=URL.createObjectURL(blob), a=document.createElement("a");
+    a.href=url;a.download=`Reporte_QAQC_${o.fecha||"dashboard"}.png`;a.click();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+  },"image/png");
+}
+$("downloadDashboardBtn").addEventListener("click",drawDashboardPNG);
+
+if("serviceWorker" in navigator){ navigator.serviceWorker.register("./sw.js").catch(()=>{}); }
+refreshDashboard(); renderHistory();
+</script>
+</body>
+</html>
