@@ -246,7 +246,18 @@ footer button{flex:1}
       </div>
 
       <div class="chart-card">
-        <div class="share-card-title"><span class="pink-icon">≡</span>Controles QA/QC individuales</div>
+        <div class="share-card-title">
+          <span class="pink-icon">≡</span>Controles QA/QC individuales
+        </div>
+
+        <!-- LEYENDA -->
+        <div class="legend" style="justify-content:center; margin-top:0; margin-bottom:6px;">
+          <span><i style="background:var(--pink)"></i>Preparación</span>
+          <span><i style="background:var(--purple)"></i>DRX</span>
+          <span><i style="background:var(--blue)"></i>FRX</span>
+          <span><i style="background:var(--green)"></i>NIR</span>
+        </div>
+
         <div class="barset" id="controlBars" style="gap:6px;height:210px">
           <div class="barcol"><div class="bar" id="b_mp" style="background:var(--pink)"></div><b id="v_mp">0</b><small>MP</small></div>
           <div class="barcol"><div class="bar" id="b_cg" style="background:var(--pink)"></div><b id="v_cg">0</b><small>CG</small></div>
