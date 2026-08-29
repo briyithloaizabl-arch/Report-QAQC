@@ -499,11 +499,39 @@ function drawDashboardPNG(){
   // bottom left controls
   roundedRect(ctx,32,920,610,455,20,"#ffffff",border);
   roundedRect(ctx,50,907,350,46,18,pale); txt(ctx,"≡  Controles QA/QC individuales",70,930,21,"700","#202124");
+  // Leyenda de procesos
+  const legendY = 975;
+
+  const legendItems = [
+    ["Preparación","#e79ab6"],
+    ["DRX","#ad8bd4"],
+    ["FRX","#79afd8"],
+    ["NIR","#78c5a4"]
+  ];
+
+  const legendX = [70, 220, 315, 410];
+
+  legendItems.forEach((it,i)=>{
+    const x = legendX[i];
+
+    roundedRect(ctx,x,legendY-7,14,14,3,it[1]);
+
+    txt(
+      ctx,
+      it[0],
+      x+22,
+      legendY,
+      13,
+      "500",
+      "#606873"
+    );
+  });
+
   const controls=[["MP",o.mp,"#e79ab6"],["CG",o.cg,"#e79ab6"],["MDP",o.mdp,"#e79ab6"],["Cor.",o.corundum,"#ad8bd4"],["MDI",o.mdi,"#ad8bd4"],["MRI",o.mri,"#ad8bd4"],["CS-M2",o.csm2,"#79afd8"],["BLK",o.blk,"#79afd8"],["STD",o.std,"#79afd8"],["MD",o.md,"#79afd8"],["MY",o.my,"#78c5a4"],["MDL",o.mdl,"#78c5a4"]];
   const maxC=Math.max(1,...controls.map(x=>x[1]));
   const bw=38,gap=10,start=58,baseY=1320;
   controls.forEach((it,i)=>{
-    const x=start+i*(bw+gap), bh=285*it[1]/maxC;
+    const x=start+i*(bw+gap), bh=250*it[1]/maxC;
     roundedRect(ctx,x,baseY-bh,bw,bh,6,it[2]);
     txt(ctx,it[1],x+bw/2,baseY-bh-16,11,"700","#202124","center");
     txt(ctx,it[0],x+bw/2,baseY+20,10,"600","#505762","center");
